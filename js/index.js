@@ -1,24 +1,20 @@
 //haciendo show request
 $(function(){
-
   var $tvShowsContainer = $('#app-body').find('.tv-shows');
-
-
   function renderShows(shows){
+    $tvShowsContainer.find('.loader').remove();
+
     shows.forEach(function(show){
       var article = template
       .replace(':name:' , show.name)
-      .replace(':img:' , show.image.medium)
+      .replace(':img:' , show.image ? show.image.medium: '')
       .replace(':summary:' , show.summary)
       .replace(':img alt:' , show.name + "Logo")
-
       var $article = $(article)
       $article.hide();
       $tvShowsContainer.append($article.show());
     })
   }
-
-
         $('#app-body')
         .find('form')
         .submit(  function  (ev)  {
@@ -38,13 +34,10 @@ $(function(){
                 return el.show;
               })
             renderShows(shows);
-
           }
         })
       })
-  // string html
-
-  var template = ' <article class="tv-show">'+
+    var template = ' <article class="tv-show">'+
     ' <div class="left img-container">'+
     '<img src=":img:" alt=":img alt:">'+
      '</div>'+
@@ -52,22 +45,25 @@ $(function(){
       ' <h1>:name:</h1>'+
   '<p> :summary:</p>' +
     ' </div>'+
-
    '</article>';
 
 
 
-//  /string html
 
 
-  $.ajax({
-    url: 'http://api.tvmaze.com/shows',
-    success: function (shows, textStatus, xhr) {
-    $tvShowsContainer.find('.loader').remove();
-    renderShows(shows);
 
 
-    }
 
-  })
+
+   if (!localStorage.shows){
+     $.ajax('http://api.tvmaze.com/shows')
+     .then(function (shows){
+       $tvShowsContainer.find('.loader').remove();
+       localStorage.shows = JSON.stringify(shows);
+       renderShows(shows);
+     })
+   } else {
+      renderShows(JSON.parse(localStorage.shows));
+   }
+
 })
