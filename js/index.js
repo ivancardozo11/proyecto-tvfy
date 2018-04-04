@@ -1,6 +1,12 @@
 //haciendo show request
 $(function(){
   var $tvShowsContainer = $('#app-body').find('.tv-shows');
+
+  $tvShowsContainer.on('click','button.like' , function (ev) {
+    var $this = $(this);
+    $this.closest('.tv-show').toggleClass('liked')
+  })
+
   function renderShows(shows){
     $tvShowsContainer.find('.loader').remove();
 
@@ -11,8 +17,8 @@ $(function(){
       .replace(':summary:' , show.summary)
       .replace(':img alt:' , show.name + "Logo")
       var $article = $(article)
-      $article.hide();
-      $tvShowsContainer.append($article.show());
+
+      $tvShowsContainer.append($article.fadeIn(1500));
     })
   }
         $('#app-body')
@@ -44,6 +50,7 @@ $(function(){
      '<div class="right info">'+
       ' <h1>:name:</h1>'+
   '<p> :summary:</p>' +
+  '<button class="like">&#x1F44D;</button>'
     ' </div>'+
    '</article>';
 
